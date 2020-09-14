@@ -1,7 +1,7 @@
 #!/bin/bash
 # This script will update the env.list file (file containing USERS environrment variable) and add the new users if there are any.
 
-FTP_DIRECTORY="/home/aws/s3bucket/ftp-users"
+FTP_DIRECTORY="/home/aws/s3bucket"
 CONFIG_FILE="env.list" # May need to modify config file name to reflect future changes in env file location/name
 SLEEP_DURATION=60
 # Change theses next two variables to set different permissions for files/directories
@@ -27,13 +27,13 @@ add_users() {
       # This would not allow ftp users to read the files
 
       # Search for files and directories not owned correctly
-      find "$FTP_DIRECTORY/$username/files/" -mindepth 1 \( \! -user "$username" \! -group "$username" \) -print0 | xargs -0 -r chown "$username:$username"
+      find "$FTP_DIRECTORY/$username/" -mindepth 1 \( \! -user "$username" \! -group "$username" \) -print0 | xargs -0 -r chown "$username:$username"
 
       # Search for files with incorrect permissions
-      find "$FTP_DIRECTORY/$username/files/" -mindepth 1 -type f \! -perm "$FILE_PERMISSIONS" -print0 | xargs -0 -r chmod "$FILE_PERMISSIONS"
+      find "$FTP_DIRECTORY/$username//" -mindepth 1 -type f \! -perm "$FILE_PERMISSIONS" -print0 | xargs -0 -r chmod "$FILE_PERMISSIONS"
 
       # Search for directories with incorrect permissions
-      find "$FTP_DIRECTORY/$username/files/" -mindepth 1 -type d \! -perm "$DIRECTORY_PERMISSIONS" -print0 | xargs -0 -r chmod "$DIRECTORY_PERMISSIONS"
+      find "$FTP_DIRECTORY/$username/" -mindepth 1 -type d \! -perm "$DIRECTORY_PERMISSIONS" -print0 | xargs -0 -r chmod "$DIRECTORY_PERMISSIONS"
 
       # Search for .ssh folders and authorized_keys files with incorrect permissions/ownership
       find "$FTP_DIRECTORY/$username/.ssh" -mindepth 1 -type d \! -perm 700 -print0 | xargs -0 -r chmod 700
@@ -52,9 +52,9 @@ add_users() {
       chown root:ftpaccess "$FTP_DIRECTORY/$username"
       chmod 750 "$FTP_DIRECTORY/$username"
 
-      mkdir -p "$FTP_DIRECTORY/$username/files"
-      chown $username:ftpaccess "$FTP_DIRECTORY/$username/files"
-      chmod 750 "$FTP_DIRECTORY/$username/files"
+      mkdir -p "$FTP_DIRECTORY/$username"
+      chown $username:ftpaccess "$FTP_DIRECTORY/$username"
+      chmod 750 "$FTP_DIRECTORY/$username"
     fi
   done
 }

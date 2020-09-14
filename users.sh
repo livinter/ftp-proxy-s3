@@ -1,6 +1,6 @@
 #!/bin/bash
 
-FTP_DIRECTORY="/home/aws/s3bucket/ftp-users"
+FTP_DIRECTORY="/home/aws/s3bucket"
 
 # Create a group for ftp users
 groupadd ftpaccess
@@ -32,8 +32,8 @@ for u in $USERS; do
     # Directory exists but permissions for it have to be setup anyway.
     chown root:ftpaccess "$FTP_DIRECTORY/$username"
     chmod 750 "$FTP_DIRECTORY/$username"
-    chown $username:ftpaccess "$FTP_DIRECTORY/$username/files"
-    chmod 750 "$FTP_DIRECTORY/$username/files"
+    chown $username:ftpaccess "$FTP_DIRECTORY/$username"
+    chmod 750 "$FTP_DIRECTORY/$username"
 
     # Create .ssh folder and authorized_keys file, for ssh-key sftp access
     mkdir -p "$FTP_DIRECTORY/$username/.ssh"
@@ -52,9 +52,9 @@ for u in $USERS; do
     chmod 750 "$FTP_DIRECTORY/$username"
 
     # Need files sub-directory for SFTP chroot
-    mkdir -p "$FTP_DIRECTORY/$username/files"
-    chown $username:ftpaccess "$FTP_DIRECTORY/$username/files"
-    chmod 750 "$FTP_DIRECTORY/$username/files"
+    mkdir -p "$FTP_DIRECTORY/$username"
+    chown $username:ftpaccess "$FTP_DIRECTORY/$username"
+    chmod 750 "$FTP_DIRECTORY/$username"
   fi
 
 done
